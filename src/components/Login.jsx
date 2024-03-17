@@ -1,6 +1,10 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 export default function Login() {
+  const [formIsInvalid, setFormIsInvalid] = useState({
+    IsEmailValid: false,
+    isPasswordValid: false,
+  });
   const emailRef = useRef();
   const passwordRef = useRef();
 
@@ -10,8 +14,40 @@ export default function Login() {
     const enteredEmail = emailRef.current.value;
     const enteredPassword = passwordRef.current.value;
     console.log(enteredEmail, enteredPassword);
-    emailRef.current.value = "";
-    passwordRef.current.value = "";
+
+    const isEmailValid = enteredEmail.includes("@");
+    const isPassisValid = enteredPassword.length > 8;
+    console.log(enteredPassword.length);
+    if (!isEmailValid) {
+      setFormIsInvalid((prev) => ({
+        ...prev,
+        IsEmailValid: true,
+      }));
+      console.log("formIsInvalid", formIsInvalid);
+    } else {
+      setFormIsInvalid((prev) => ({
+        ...prev,
+        IsEmailValid: false,
+      }));
+    }
+    console.log(isPassisValid);
+    if (!isPassisValid) {
+      setFormIsInvalid((prev) => ({
+        ...prev,
+        isPasswordValid: true,
+      }));
+      console.log("formIsInvalid", formIsInvalid);
+      return;
+    }
+
+    setFormIsInvalid((prev) => ({
+      IsEmailValid: false,
+      isPasswordValid: false,
+    }));
+
+    console.log("Http hitted");
+    // emailRef.current.value = "";
+    // passwordRef.current.value = "";
   }
 
   return (
@@ -28,6 +64,11 @@ export default function Login() {
             autoComplete="username"
             ref={emailRef}
           />
+          {formIsInvalid.IsEmailValid && (
+            <div className="control-error">
+              <p>Please enter a valid email address</p>
+            </div>
+          )}
         </div>
 
         <div className="control no-margin">
@@ -39,6 +80,11 @@ export default function Login() {
             autoComplete="current-password"
             ref={passwordRef}
           />
+          {formIsInvalid.isPasswordValid && (
+            <div className="control-error">
+              <p>Please enter a valid password</p>
+            </div>
+          )}
         </div>
       </div>
 
