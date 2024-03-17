@@ -1,17 +1,52 @@
+import { useState } from "react";
+
 export default function Login() {
+  const [enetredValues, setEnterenValues] = useState({
+    email: "",
+    password: "",
+  });
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    setEnterenValues({
+      email: "",
+      password: "",
+    });
+  }
+  function handleInputChange(identifier, event) {
+    setEnterenValues((prev) => ({
+      ...prev,
+      [identifier]: event.target.value,
+    }));
+  }
+
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <h2>Login</h2>
 
       <div className="control-row">
         <div className="control no-margin">
           <label htmlFor="email">Email</label>
-          <input id="email" type="email" name="email" />
+          <input
+            id="email"
+            type="email"
+            name="email"
+            autoComplete="username"
+            onChange={(event) => handleInputChange("email", event)}
+            value={enetredValues.email}
+          />
         </div>
 
         <div className="control no-margin">
           <label htmlFor="password">Password</label>
-          <input id="password" type="password" name="password" />
+          <input
+            id="password"
+            type="password"
+            name="password"
+            autoComplete="current-password"
+            onChange={(event) => handleInputChange("password", event)}
+            value={enetredValues.password}
+          />
         </div>
       </div>
 
