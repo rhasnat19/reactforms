@@ -1,59 +1,45 @@
-import { useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import ErrorNotifier from "./ErrorNotifier.jsx";
+import { useEffect } from "react";
 
 export default function Login({ handleFormSwitcher }) {
-  const [formIsInvalid, setFormIsInvalid] = useState({
-    IsEmailValid: false,
-    isPasswordValid: false,
-  });
-  const emailRef = useRef();
-  const passwordRef = useRef();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    // formState,
+    // formState: { isSubmitSuccessful },
+  } = useForm();
 
-  function handleSubmit(event) {
-    event.preventDefault();
+  // useEffect(() => {
+  //   if (formState.isSubmitSuccessful) {
+  //     reset({ email: "", password: "" });
+  //   }
+  // }, [formState, reset]);
 
-    const enteredEmail = emailRef.current.value;
-    const enteredPassword = passwordRef.current.value;
-    console.log(enteredEmail, enteredPassword);
+  function onSubmit(data) {
+    console.log(data);
+  }
 
-    const isEmailValid = enteredEmail.includes("@");
-    const isPassisValid = enteredPassword.length > 8;
-    console.log(enteredPassword.length);
-    if (!isEmailValid) {
-      setFormIsInvalid((prev) => ({
-        ...prev,
-        IsEmailValid: true,
-      }));
-      console.log("formIsInvalid", formIsInvalid);
-    } else {
-      setFormIsInvalid((prev) => ({
-        ...prev,
-        IsEmailValid: false,
-      }));
-    }
-    console.log(isPassisValid);
-    if (!isPassisValid) {
-      setFormIsInvalid((prev) => ({
-        ...prev,
-        isPasswordValid: true,
-      }));
-      console.log("formIsInvalid", formIsInvalid);
-      return;
-    }
-
-    setFormIsInvalid((prev) => ({
-      IsEmailValid: false,
-      isPasswordValid: false,
-    }));
-
-    console.log("Http hitted");
-    // emailRef.current.value = "";
-    // passwordRef.current.value = "";
+  function handleReset() {
+    reset(
+      {
+        email: "",
+        password: "",
+      },
+      {
+        keepErrors: false,
+        keepDirty: false,
+        keepIsValid: true,
+        shouldValidate: false,
+      }
+    );
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <h2>Login</h2>
-
       <div className="control-row">
         <div className="control no-margin">
           <label htmlFor="email">Email</label>
@@ -62,12 +48,10 @@ export default function Login({ handleFormSwitcher }) {
             type="email"
             name="email"
             autoComplete="username"
-            ref={emailRef}
+            {...register("email", { required: true, maxLength: 20 })}
           />
-          {formIsInvalid.IsEmailValid && (
-            <div className="control-error">
-              <p>Please enter a valid email address</p>
-            </div>
+          {errors.email && (
+            <ErrorNotifier text={"Please enter a valid email address"} />
           )}
         </div>
 
@@ -78,18 +62,18 @@ export default function Login({ handleFormSwitcher }) {
             type="password"
             name="password"
             autoComplete="current-password"
-            ref={passwordRef}
+            {...register("password", { required: true, minLength: 6 })}
           />
-          {formIsInvalid.isPasswordValid && (
-            <div className="control-error">
-              <p>Please enter a valid password</p>
-            </div>
+          {errors.password && (
+            <ErrorNotifier text="Please enter a valid password" />
           )}
         </div>
       </div>
 
       <p className="form-actions">
-        <button className="button button-flat">Reset</button>
+        <button className="button button-flat" onClick={handleReset}>
+          Reset
+        </button>
         <button className="button">Login</button>
       </p>
       <p>
