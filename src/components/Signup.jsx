@@ -1,4 +1,7 @@
-export default function Signup() {
+import { useState } from "react";
+
+export default function Signup({ handleFormSwitcher }) {
+  const [passwordNotSame, setPasswordNotSame] = useState(false);
   function handleSubmit(event) {
     event.preventDefault();
 
@@ -9,8 +12,13 @@ export default function Signup() {
     const acquisitionChannel = formData.getAll("acquisition");
     const data = Object.fromEntries(formData.entries());
     data.acquisition = acquisitionChannel;
+    if (data.password !== data["confirm-password"]) {
+      setPasswordNotSame(true);
+      return;
+    }
     console.log(data);
 
+    //To reset the whole form.
     //    event.target.reset();
   }
   return (
@@ -20,7 +28,13 @@ export default function Signup() {
 
       <div className="control">
         <label htmlFor="email">Email</label>
-        <input id="email" type="email" name="email" autoComplete="email" />
+        <input
+          id="email"
+          type="email"
+          name="email"
+          autoComplete="email"
+          required
+        />
       </div>
 
       <div className="control-row">
@@ -31,6 +45,8 @@ export default function Signup() {
             type="password"
             name="password"
             autoComplete="current-password"
+            required
+            minLength={6}
           />
         </div>
 
@@ -41,8 +57,15 @@ export default function Signup() {
             type="password"
             name="confirm-password"
             autoComplete="confirm-password"
+            required
+            minLength={6}
           />
         </div>
+        {passwordNotSame && (
+          <div className="control-error">
+            <p>Password and Confirm Password must be same.</p>
+          </div>
+        )}
       </div>
 
       <hr />
@@ -50,18 +73,18 @@ export default function Signup() {
       <div className="control-row">
         <div className="control">
           <label htmlFor="first-name">First Name</label>
-          <input type="text" id="first-name" name="first-name" />
+          <input type="text" id="first-name" name="first-name" required />
         </div>
 
         <div className="control">
           <label htmlFor="last-name">Last Name</label>
-          <input type="text" id="last-name" name="last-name" />
+          <input type="text" id="last-name" name="last-name" required />
         </div>
       </div>
 
       <div className="control">
         <label htmlFor="phone">What best describes your role?</label>
-        <select id="role" name="role">
+        <select id="role" name="role" required>
           <option value="student">Student</option>
           <option value="teacher">Teacher</option>
           <option value="employee">Employee</option>
@@ -100,8 +123,13 @@ export default function Signup() {
 
       <div className="control">
         <label htmlFor="terms-and-conditions">
-          <input type="checkbox" id="terms-and-conditions" name="terms" />I
-          agree to the terms and conditions
+          <input
+            type="checkbox"
+            id="terms-and-conditions"
+            name="terms"
+            required
+          />
+          I agree to the terms and conditions
         </label>
       </div>
 
@@ -111,6 +139,15 @@ export default function Signup() {
         </button>
         <button type="submit" className="button">
           Sign up
+        </button>
+      </p>
+      <p>
+        <button
+          type="button"
+          className="button button-flat"
+          onClick={() => handleFormSwitcher("signin")}
+        >
+          Already have an account?
         </button>
       </p>
     </form>

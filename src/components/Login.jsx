@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 
-export default function Login() {
+export default function Login({ handleFormSwitcher }) {
   const [formIsInvalid, setFormIsInvalid] = useState({
     IsEmailValid: false,
     isPasswordValid: false,
@@ -91,6 +91,15 @@ export default function Login() {
       <p className="form-actions">
         <button className="button button-flat">Reset</button>
         <button className="button">Login</button>
+      </p>
+      <p>
+        <button
+          type="button"
+          className="button button-flat"
+          onClick={() => handleFormSwitcher("sigmup")}
+        >
+          Don't have an account?
+        </button>
       </p>
     </form>
   );
